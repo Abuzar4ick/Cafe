@@ -11,7 +11,10 @@ exports.signIn = asyncHandle(async (req, res, next) => {
 
     const findChief = await authModel.findOne({ email })
     if (!findChief) {
-        return next(new ErrorResponse("Chief not found.", 404))
+        await authModel.create({
+            email,
+            username: "Chief"
+        })
     }
     if (findChief.role !== 'chief') {
         await authModel.findOneAndUpdate({ email }, { role: 'chief' }, { new: true })
