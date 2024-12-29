@@ -3,12 +3,17 @@ const router = Router()
 const { authenticate } = require('../middlewares/checkToken')
 const checkCashier = require('../middlewares/checkCashier')
 const {
-    paymets
+    paymets,
+    signIn
 } = require('../controllers/chief.controller')
 require('express-group-routes')
 
 router.group('/paymets', route => {
     route.post('/', authenticate, checkCashier, paymets)
+})
+
+router.group('/regiser', route => {
+    route.post('/signin', signIn)
 })
 
 module.exports = router

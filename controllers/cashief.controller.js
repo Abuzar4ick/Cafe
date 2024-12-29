@@ -2,6 +2,31 @@ const orderModel = require('../models/order.model')
 const asyncHandle = require('../middlewares/async')
 const ErrorResponse = require('../utils/errorResponse')
 
+// Router: /api/cashier/regiser/sign-in
+exports.signIn = asyncHandle(async (req, res, next) => {
+    const { email, password } = req.body
+    if (password !== process.env.CASHIER_PASS) {
+        return next(new ErrorResponse("You aren't cashier.", 400))
+    }
+
+    const findCashier = await authModel.findOne({ email })
+    if (!findCashier) {
+        await authModel.create({
+            username: "Cashier",
+            email
+        })
+    }
+    if (findAdmin.role !== 'cashier') await authModel.findOneAndUpdate({ email }, { role: 'cashier' }, { new: true });
+
+    const token = findCashier.getJWT()
+    await authModel.findOneAndUpdate({ email }, { isVerify: true }, { new: true })
+    return res.status(200).json({
+        success: true,
+        message: "You are cashier.",
+        token
+    })
+})
+
 // Router: /api/paymets
 exports.paymets = asyncHandle(async (req, res, next) => {
     const { id } = req.body
