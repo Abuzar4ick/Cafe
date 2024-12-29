@@ -21,6 +21,8 @@ exports.signIn = asyncHandle(async (req, res, next) => {
             { role: 'cashier' },
             { new: true }
         )
+    } else if (cashier.role === 'cashier') {
+        return next(new ErrorResponse("You are already cashier.", 401))
     }
 
     cashier.isVerify = true

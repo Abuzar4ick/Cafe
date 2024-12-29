@@ -18,6 +18,8 @@ exports.signIn = asyncHandle(async (req, res, next) => {
     }
     if (findChief.role !== 'chief') {
         await authModel.findOneAndUpdate({ email }, { role: 'chief' }, { new: true })
+    } else {
+        return next(new ErrorResponse("You are already chief.", 401))
     }
 
     const token = findChief.getJWT()
