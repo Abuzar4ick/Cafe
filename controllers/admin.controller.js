@@ -13,11 +13,12 @@ exports.signIn = asyncHandle(async (req, res, next) => {
 
     const findAdmin = await authModel.findOne({ email })
     if (!findAdmin) {
-        return next(new ErrorResponse("Admin not found.", 404))
+        await authModel.create({
+            username: "Admin",
+            email
+        })
     }
-    if (findAdmin.role !== 'admin') {
-        await authModel.findOneAndUpdate({ email }, { role: 'admin' }, { new: true })
-    }
+    if (findAdmin.role !== 'admin') await authModel.findOneAndUpdate({ email }, { role: 'admin' }, { new: true });
 
     const token = findAdmin.getJWT()
     await authModel.findOneAndUpdate({ email }, { isVerify: true }, { new: true })
