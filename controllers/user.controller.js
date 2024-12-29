@@ -48,6 +48,7 @@ exports.verify = asyncHandle(async (req, res, next) => {
     return res.status(200).json({
         success: true,
         message: "You have successfully verified your account.",
+        user,
         token
     })
 })
