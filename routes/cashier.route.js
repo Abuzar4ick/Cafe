@@ -12,7 +12,7 @@ router.group('/paymets', route => {
     route.post('/', authenticate, checkCashier, paymets)
 })
 
-router.group('/cashier/regiser', route => {
+router.group('/cashier/register', route => {
     route.post('/signin', signIn)
 })
 
