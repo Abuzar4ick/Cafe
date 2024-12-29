@@ -1,5 +1,5 @@
 const ErrorResponse = require('../utils/errorResponse')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
 const otpModel = require('../models/otp.model')
 const nodemailer = require('nodemailer')
