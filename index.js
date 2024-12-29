@@ -15,7 +15,9 @@ mongo()
 // middlewares
 app.use('/api',
     require('./routes/user.route'), 
-    require('./routes/admin.route')
+    require('./routes/admin.route'),
+    require('./routes/cashier.route'),
+    require('./routes/chief.route')
 )
 
 // error
