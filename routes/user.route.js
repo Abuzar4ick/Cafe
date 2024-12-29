@@ -11,7 +11,6 @@ const {
     newOrder,
     getOrders,
     getOrderById,
-    updateOrderStatus,
     deleteOrder
 } = require('../controllers/user.controller')
 const { getMenu, getDishById } = require('../controllers/admin.controller')
@@ -81,7 +80,6 @@ router.group('/orders', route => {
     route.post('/', authenticate, newOrder)
     route.get('/', authenticate, checkChief, getOrders)
     route.get('/:id', authenticate, getOrderById)
-    route.patch('/:id', authenticate, checkChief, updateOrderStatus)
     route.delete('/:id', authenticate, checkAdmin, deleteOrder)
 })
 

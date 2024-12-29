@@ -96,21 +96,6 @@ exports.getOrderById = asyncHandle(async (req, res, next) => {
 })
 
 // Router: /api/orders/:id
-// For: chief
-exports.updateOrderStatus = asyncHandle(async (req, res, next) => {
-    const { id } = req.params
-    if (!mongoose.Types.ObjectId.isValid(id)) return next(new ErrorResponse("Invalid ID format.", 400));
-    const { newStatus } = req.body
-    const order = await orderModel.findByIdAndUpdate(id, { status: newStatus }, { new: true })
-    if (!order) return next(new ErrorResponse("Order with this id not found.", 404));
-    res.status(200).json({
-        success: true,
-        message: "Order successfuly updated.",
-        order
-    })
-})
-
-// Router: /api/orders/:id
 // For: admin
 exports.deleteOrder = asyncHandle(async (req, res, next) => {
     const { id } = req.params
