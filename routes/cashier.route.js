@@ -5,7 +5,7 @@ const checkCashier = require('../middlewares/checkCashier')
 const {
     paymets,
     signIn
-} = require('../controllers/chief.controller')
+} = require('../controllers/cashier.controller')
 require('express-group-routes')
 
 router.group('/paymets', route => {
