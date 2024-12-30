@@ -16,71 +16,180 @@ const {
 const { getMenu, getDishById } = require('../controllers/admin.controller')
 require('express-group-routes')
 
-router.group('/register', route => {
-    // POST methods
-    route.post('/signup', [
-        body('username')
-            .isLength({ max: 50 }).withMessage("Qisqaroq ism kiriting.")
-            .isLength({ min: 2 }).withMessage("Uzunroq ism kiriting."),
-        body('email')
-            .isEmail().withMessage("Iltimos, email ni to'g'ri kiriting.")
-            .matches('@gmail.com$', 'i').withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
-        (req, res, next) => {
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                return res.status(400).json({
-                    success: false,
-                    errors: errors.array()
-                });
-            }
-            next();
-        }
-    ], signup);
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     SignUpRequest:
+ *       type: object
+ *       required:
+ *         - username
+ *         - email
+ *       properties:
+ *         username:
+ *           type: string
+ *           example: John Doe
+ *         email:
+ *           type: string
+ *           example: example@gmail.com
+ *     LoginRequest:
+ *       type: object
+ *       required:
+ *         - email
+ *       properties:
+ *         email:
+ *           type: string
+ *           example: example@gmail.com
+ *     VerifyOTPRequest:
+ *       type: object
+ *       required:
+ *         - email
+ *         - otp
+ *       properties:
+ *         email:
+ *           type: string
+ *           example: example@gmail.com
+ *         otp:
+ *           type: string
+ *           example: 1234
+ *     OrderRequest:
+ *       type: object
+ *       required:
+ *         - orderId
+ *         - payment
+ *       properties:
+ *         orderId:
+ *           type: string
+ *           example: 63f2b8b4c2f86e2e4c4d7a1d
+ *         payment:
+ *           type: string
+ *           example: Card
+ */
 
-    route.post('/login', [
-        body('email')
-            .isEmail().withMessage("Iltimos, email ni to'g'ri kiriting.")
-            .matches('@gmail.com$', 'i').withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
-        (req, res, next) => {
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                return res.status(400).json({
-                    success: false,
-                    errors: errors.array()
-                })
-            }
-            next()
-        }
-    ], login)
+/**
+ * @swagger
+ * /register/signup:
+ *   post:
+ *     summary: Sign up a new user
+ *     description: Registers a new user in the system.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SignUpRequest'
+ *     responses:
+ *       201:
+ *         description: User registered successfully.
+ *       400:
+ *         description: Validation error.
+ *       401:
+ *         description: User already exists.
+ */
 
-    route.post('/verify', [
-        body('email')
-            .isEmail().withMessage("Iltimos, email ni to'g'ri kiriting.")
-            .matches('@gmail.com$', 'i').withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
-        body('otp')
-            .isLength({ min: 4 }).withMessage("OTP ni to'liq kiriting.")
-            .isLength({ max: 4 }).withMessage("OTP ni to'liq kiriting."),
-        (req, res, next) => {
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                return res.status(400).json({
-                    success: false,
-                    errors: errors.array()
-                })
-            }
-            next()
-        }
-    ], verify)
-})
+/**
+ * @swagger
+ * /register/login:
+ *   post:
+ *     summary: Log in user
+ *     description: Logs in the user and sends an OTP.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginRequest'
+ *     responses:
+ *       200:
+ *         description: OTP sent successfully.
+ *       404:
+ *         description: User not found.
+ *       400:
+ *         description: Validation error.
+ */
 
-router.get('/menu', authenticate, getMenu)
-router.get('/menu/:id', authenticate, getDishById)
+/**
+ * @swagger
+ * /register/verify:
+ *   post:
+ *     summary: Verify user OTP
+ *     description: Verifies the OTP sent to the user's email.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/VerifyOTPRequest'
+ *     responses:
+ *       200:
+ *         description: Account verified successfully.
+ *       404:
+ *         description: User not found.
+ *       400:
+ *         description: Invalid OTP.
+ */
 
-router.group('/orders', route => {
-    route.post('/', authenticate, newOrder)
-    route.get('/', authenticate, checkChief, getOrders)
-    route.get('/:id', authenticate, getOrderById)
-    route.delete('/:id', authenticate, checkAdmin, deleteOrder)
-})
+/**
+ * @swagger
+ * /orders:
+ *   post:
+ *     summary: Create a new order
+ *     description: Creates a new order for the logged-in user.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/OrderRequest'
+ *     responses:
+ *       201:
+ *         description: Order created successfully.
+ *       404:
+ *         description: Dish not found.
+ *   get:
+ *     summary: Get all orders
+ *     description: Fetches all orders (admin and chief only).
+ *     responses:
+ *       200:
+ *         description: Orders fetched successfully.
+ */
+
+/**
+ * @swagger
+ * /orders/{id}:
+ *   get:
+ *     summary: Get order by ID
+ *     description: Fetches details of an order by its ID (admin and chief only).
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 63f2b8b4c2f86e2e4c4d7a1d
+ *     responses:
+ *       200:
+ *         description: Order details fetched successfully.
+ *       404:
+ *         description: Order not found.
+ *   delete:
+ *     summary: Delete order by ID
+ *     description: Deletes an order by its ID (admin only).
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 63f2b8b4c2f86e2e4c4d7a1d
+ *     responses:
+ *       200:
+ *         description: Order deleted successfully.
+ *       404:
+ *         description: Order not found.
+ *       400:
+ *         description: Invalid ID format.
+ */
+
 
 module.exports = router
