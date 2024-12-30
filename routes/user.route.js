@@ -25,7 +25,7 @@ require('express-group-routes')
 
 /**
  * @swagger
- * /register/signup:
+ * /api/register/signup:
  *   post:
  *     summary: Register a new user
  *     tags: [User]
@@ -71,7 +71,7 @@ router.group('/register', route => {
 
 /**
  * @swagger
- * /register/login:
+ * /api/register/login:
  *   post:
  *     summary: Login an existing user
  *     tags: [User]
@@ -109,7 +109,7 @@ router.post('/login', [
 
 /**
  * @swagger
- * /register/verify:
+ * /api/register/verify:
  *   post:
  *     summary: Verify a user's OTP for login
  *     tags: [User]
