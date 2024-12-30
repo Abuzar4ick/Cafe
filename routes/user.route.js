@@ -90,7 +90,7 @@ router.group('/register', route => {
  *       400:
  *         description: Invalid input data
  */
-route.post('/login', [
+router.post('/login', [
     body('email')
         .isEmail().withMessage("Iltimos, email ni to'g'ri kiriting.")
         .matches('@gmail.com$', 'i').withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
@@ -131,7 +131,7 @@ route.post('/login', [
  *       400:
  *         description: Invalid input data
  */
-route.post('/verify', [
+router.post('/verify', [
     body('email')
         .isEmail().withMessage("Iltimos, email ni to'g'ri kiriting.")
         .matches('@gmail.com$', 'i').withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
@@ -220,7 +220,7 @@ router.group('/orders', route => {
  *       404:
  *         description: Order not found
  */
-route.get('/:id', authenticate, getOrderById)
+router.get('/orders/:id', authenticate, checkChief, getOrderById)
 
 /**
  * @swagger
@@ -241,6 +241,6 @@ route.get('/:id', authenticate, getOrderById)
  *       404:
  *         description: Order not found
  */
-route.delete('/:id', authenticate, checkAdmin, deleteOrder)
+router.delete('/orders/:id', authenticate, checkAdmin, deleteOrder)
 
-module.exports = router;
+module.exports = router
