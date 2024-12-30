@@ -1,21 +1,21 @@
-const { Router } = require('express')
-const router = Router()
-const { authenticate } = require('../middlewares/checkToken')
-const { body, validationResult } = require('express-validator')
-const checkChief = require('../middlewares/checkChief')
-const checkAdmin = require('../middlewares/checkAdmin')
+const { Router } = require("express");
+const router = Router();
+const { authenticate } = require("../middlewares/checkToken");
+const { body, validationResult } = require("express-validator");
+const checkChief = require("../middlewares/checkChief");
+const checkAdmin = require("../middlewares/checkAdmin");
 const {
-    signup,
-    login,
-    verify,
-    newOrder,
-    getOrders,
-    getOrderById,
-    deleteOrder,
-    logout
-} = require('../controllers/user.controller')
-const { getMenu, getDishById } = require('../controllers/admin.controller')
-require('express-group-routes')
+  signup,
+  login,
+  verify,
+  newOrder,
+  getOrders,
+  getOrderById,
+  deleteOrder,
+  logout,
+} = require("../controllers/user.controller");
+const { getMenu, getDishById } = require("../controllers/admin.controller");
+require("express-group-routes");
 
 /**
  * @swagger
@@ -49,108 +49,130 @@ require('express-group-routes')
  *         description: Invalid input data
  */
 
-router.group('/register', route => {
-    route.post('/signup', [
-        body('username')
-            .isLength({ max: 50 }).withMessage("Qisqaroq ism kiriting.")
-            .isLength({ min: 2 }).withMessage("Uzunroq ism kiriting."),
-        body('email')
-            .isEmail().withMessage("Iltimos, email ni to'g'ri kiriting.")
-            .matches('@gmail.com$', 'i').withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
-        (req, res, next) => {
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                return res.status(400).json({
-                    success: false,
-                    errors: errors.array()
-                });
-            }
-            next();
+router.group("/register", (route) => {
+  route.post(
+    "/signup",
+    [
+      body("username")
+        .isLength({ max: 50 })
+        .withMessage("Qisqaroq ism kiriting.")
+        .isLength({ min: 2 })
+        .withMessage("Uzunroq ism kiriting."),
+      body("email")
+        .isEmail()
+        .withMessage("Iltimos, email ni to'g'ri kiriting.")
+        .matches("@gmail.com$", "i")
+        .withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
+      (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          return res.status(400).json({
+            success: false,
+            errors: errors.array(),
+          });
         }
-    ], signup);
+        next();
+      },
+    ],
+    signup
+  );
+
+  /**
+   * @swagger
+   * /api/register/login:
+   *   post:
+   *     summary: Login an existing user
+   *     tags: [User]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               email:
+   *                 type: string
+   *                 format: email
+   *     responses:
+   *       200:
+   *         description: User successfully logged in
+   *       400:
+   *         description: Invalid input data
+   */
+  router.post(
+    "/login",
+    [
+      body("email")
+        .isEmail()
+        .withMessage("Iltimos, email ni to'g'ri kiriting.")
+        .matches("@gmail.com$", "i")
+        .withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
+      (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          return res.status(400).json({
+            success: false,
+            errors: errors.array(),
+          });
+        }
+        next();
+      },
+    ],
+    login
+  );
+
+  /**
+   * @swagger
+   * /api/register/verify:
+   *   post:
+   *     summary: Verify a user's OTP for login
+   *     tags: [User]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               email:
+   *                 type: string
+   *                 format: email
+   *               otp:
+   *                 type: string
+   *                 description: OTP sent to the user
+   *     responses:
+   *       200:
+   *         description: OTP successfully verified
+   *       400:
+   *         description: Invalid input data
+   */
+  router.post(
+    "/verify",
+    [
+      body("email")
+        .isEmail()
+        .withMessage("Iltimos, email ni to'g'ri kiriting.")
+        .matches("@gmail.com$", "i")
+        .withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
+      body("otp")
+        .isLength({ min: 4 })
+        .withMessage("OTP ni to'liq kiriting.")
+        .isLength({ max: 4 })
+        .withMessage("OTP ni to'liq kiriting."),
+      (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          return res.status(400).json({
+            success: false,
+            errors: errors.array(),
+          });
+        }
+        next();
+      },
+    ],
+    verify
+  );
 });
-
-/**
- * @swagger
- * /api/register/login:
- *   post:
- *     summary: Login an existing user
- *     tags: [User]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *     responses:
- *       200:
- *         description: User successfully logged in
- *       400:
- *         description: Invalid input data
- */
-router.post('/login', [
-    body('email')
-        .isEmail().withMessage("Iltimos, email ni to'g'ri kiriting.")
-        .matches('@gmail.com$', 'i').withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({
-                success: false,
-                errors: errors.array()
-            })
-        }
-        next()
-    }
-], login)
-
-/**
- * @swagger
- * /api/register/verify:
- *   post:
- *     summary: Verify a user's OTP for login
- *     tags: [User]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               otp:
- *                 type: string
- *                 description: OTP sent to the user
- *     responses:
- *       200:
- *         description: OTP successfully verified
- *       400:
- *         description: Invalid input data
- */
-router.post('/verify', [
-    body('email')
-        .isEmail().withMessage("Iltimos, email ni to'g'ri kiriting.")
-        .matches('@gmail.com$', 'i').withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
-    body('otp')
-        .isLength({ min: 4 }).withMessage("OTP ni to'liq kiriting.")
-        .isLength({ max: 4 }).withMessage("OTP ni to'liq kiriting."),
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({
-                success: false,
-                errors: errors.array()
-            })
-        }
-        next()
-    }
-], verify)
 
 /**
  * @swagger
@@ -164,7 +186,7 @@ router.post('/verify', [
  *       500:
  *         description: Server error
  */
-router.get('/menu', authenticate, getMenu)
+router.get("/menu", authenticate, getMenu);
 
 /**
  * @swagger
@@ -185,7 +207,7 @@ router.get('/menu', authenticate, getMenu)
  *       404:
  *         description: Dish not found
  */
-router.get('/menu/:id', authenticate, getDishById)
+router.get("/menu/:id", authenticate, getDishById);
 
 /**
  * @swagger
@@ -199,8 +221,8 @@ router.get('/menu/:id', authenticate, getDishById)
  *       500:
  *         description: Server error
  */
-router.group('/orders', route => {
-    route.post('/', authenticate, newOrder)
+router.group("/orders", (route) => {
+  route.post("/", authenticate, newOrder);
 });
 
 /**
@@ -222,7 +244,7 @@ router.group('/orders', route => {
  *       404:
  *         description: Order not found
  */
-router.get('/orders/:id', authenticate, checkChief, getOrderById)
+router.get("/orders/:id", authenticate, checkChief, getOrderById);
 
 /**
  * @swagger
@@ -243,7 +265,7 @@ router.get('/orders/:id', authenticate, checkChief, getOrderById)
  *       404:
  *         description: Order not found
  */
-router.delete('/orders/:id', authenticate, checkAdmin, deleteOrder)
+router.delete("/orders/:id", authenticate, checkAdmin, deleteOrder);
 
 /**
  * @swagger
@@ -261,6 +283,6 @@ router.delete('/orders/:id', authenticate, checkAdmin, deleteOrder)
  *       404:
  *         description: User not found
  */
-router.post('/auth/register/logout', authenticate, logout)
+router.post("/auth/register/logout", authenticate, logout);
 
-module.exports = router
+module.exports = router;
