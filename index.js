@@ -9,6 +9,26 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cors())
 
+const swaggerUi = require('swagger-ui-express')
+const swaggerJsdoc = require('swagger-jsdoc')
+
+const swaggerOptions = {
+    definition: {
+      openapi: '3.0.0',
+      info: {
+        title: 'API Documentation',
+        version: '1.0.0',
+        description: 'Cafe saytining API hujjatlari',
+      },
+    },
+    apis: ['./routes/user.route.js', './routes/chier.route.js', './routes/cashier.route.js', './routes/admin.route.js']
+}  
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+
+app.use('/', redirect('/api-docs'))
+
 // connect to mongo
 mongo()
 
