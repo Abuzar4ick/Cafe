@@ -1,24 +1,48 @@
-const { Router } = require('express')
-const router = Router()
-const { body, validationResult } = require('express-validator')
-const { authenticate } = require('../middlewares/checkToken')
-const checkAdmin = require('../middlewares/checkAdmin')
-require('express-group-routes')
+const { Router } = require('express');
+const router = Router();
+const { body, validationResult } = require('express-validator');
+const { authenticate } = require('../middlewares/checkToken');
+const checkAdmin = require('../middlewares/checkAdmin');
+require('express-group-routes');
 const {
     signIn,
     getUsers,
     getUserById,
     deleteUser,
     updateUser,
-// <--------------> //
     addNewDish,
     getDishById,
     updateDish,
     deleteDish
-} = require('../controllers/admin.controller')
+} = require('../controllers/admin.controller');
 
+/**
+ * @swagger
+ * /admin/register/sign-in:
+ *   post:
+ *     summary: Admin sign-in
+ *     tags: [Admin]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful sign-in
+ *       400:
+ *         description: Invalid email or password
+ *       401:
+ *         description: Unauthorized
+ */
 router.group('/admin/register', route => {
-    // POST methods
     route.post('/sign-in', [
         body('password')
             .notEmpty().withMessage('Password ni kiriting.'),
@@ -36,20 +60,54 @@ router.group('/admin/register', route => {
             next()
         }
     ], signIn)
-})
+});
 
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Get list of users
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: List of users
+ *       401:
+ *         description: Unauthorized
+ */
 router.group('/users', route => {
-    // GET methods
-    route.get('/', authenticate, checkAdmin, getUsers)
-    route.get('/:id', authenticate, checkAdmin, getUserById)
-    // DELETE methods
-    route.delete('/:id', authenticate, checkAdmin, deleteUser)
-    // PATCH methods
-    route.patch('/:id', authenticate, checkAdmin, updateUser)
-})
+    route.get('/', authenticate, checkAdmin, getUsers);
+    route.get('/:id', authenticate, checkAdmin, getUserById);
+    route.delete('/:id', authenticate, checkAdmin, deleteUser);
+    route.patch('/:id', authenticate, checkAdmin, updateUser);
+});
 
+/**
+ * @swagger
+ * /menu:
+ *   post:
+ *     summary: Add new dish to the menu
+ *     tags: [Menu]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *                 format: float
+ *     responses:
+ *       201:
+ *         description: Dish added successfully
+ *       400:
+ *         description: Invalid input data
+ *       401:
+ *         description: Unauthorized
+ */
 router.group('/menu', route => {
-    // POST methods
     route.post('/', authenticate, checkAdmin, [
         body('title')
             .notEmpty().withMessage("Iltimos, taom nomini kiriting."),
@@ -65,11 +123,9 @@ router.group('/menu', route => {
             }
             next()
         }
-    ], addNewDish)
-    // PUT methods
-    route.put('/:id', authenticate, checkAdmin, updateDish)
-    // DELETE methods
-    route.delete('/:id', authenticate, checkAdmin, deleteDish)
-})
+    ], addNewDish);
+    route.put('/:id', authenticate, checkAdmin, updateDish);
+    route.delete('/:id', authenticate, checkAdmin, deleteDish);
+});
 
-module.exports = router
+module.exports = router;

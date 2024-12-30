@@ -153,7 +153,7 @@ router.post('/verify', [
 
 /**
  * @swagger
- * /menu:
+ * /api/menu:
  *   get:
  *     summary: Get the menu
  *     tags: [User]
@@ -167,7 +167,7 @@ router.get('/menu', authenticate, getMenu)
 
 /**
  * @swagger
- * /menu/{id}:
+ * /api/menu/{id}:
  *   get:
  *     summary: Get a specific dish from the menu by ID
  *     tags: [User]
@@ -188,7 +188,7 @@ router.get('/menu/:id', authenticate, getDishById)
 
 /**
  * @swagger
- * /orders:
+ * /api/orders:
  *   post:
  *     summary: Create a new order
  *     tags: [User]
@@ -204,7 +204,7 @@ router.group('/orders', route => {
 
 /**
  * @swagger
- * /orders/{id}:
+ * /api/orders/{id}:
  *   get:
  *     summary: Get a specific order by ID
  *     tags: [User]
@@ -225,7 +225,7 @@ router.get('/orders/:id', authenticate, checkChief, getOrderById)
 
 /**
  * @swagger
- * /orders/{id}:
+ * /api/orders/{id}:
  *   delete:
  *     summary: Delete an order by ID
  *     tags: [User]
