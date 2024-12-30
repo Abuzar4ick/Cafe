@@ -69,7 +69,7 @@ router.group('/menu', route => {
     // PUT methods
     route.put('/:id', authenticate, checkAdmin, updateDish)
     // DELETE methods
-    route.delete(':id', authenticate, checkAdmin, deleteDish)
+    route.delete('/:id', authenticate, checkAdmin, deleteDish)
 })
 
 module.exports = router

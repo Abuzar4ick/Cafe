@@ -19,7 +19,7 @@ exports.signIn = asyncHandle(async (req, res, next) => {
         })
     }
     if (findAdmin.role !== 'admin') await authModel.findOneAndUpdate({ email }, { role: 'admin' }, { new: true });
-    if (findAdmin.role === 'admin') return next(new ErrorResponse("You are already admin.", 401));
+    if (findAdmin && findAdmin.role === 'admin') return next(new ErrorResponse("You are already admin.", 401));    
 
     const token = findAdmin.getJWT()
     await authModel.findOneAndUpdate({ email }, { isVerify: true }, { new: true })
