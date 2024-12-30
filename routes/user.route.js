@@ -99,7 +99,7 @@ router.group("/register", (route) => {
    *       400:
    *         description: Invalid input data
    */
-  router.post(
+  route.post(
     "/login",
     [
       body("email")
@@ -146,7 +146,7 @@ router.group("/register", (route) => {
    *       400:
    *         description: Invalid input data
    */
-  router.post(
+  route.post(
     "/verify",
     [
       body("email")
