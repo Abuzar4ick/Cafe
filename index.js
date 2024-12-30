@@ -27,7 +27,9 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsdoc(swaggerOptions)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
-app.use('/', redirect('/api-docs'))
+app.get('/', (req, res) => {
+    res.redirect('/api-docs')
+})
 
 // connect to mongo
 mongo()
