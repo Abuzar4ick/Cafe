@@ -58,14 +58,15 @@ exports.verify = asyncHandle(async (req, res, next) => {
 // Router: /api/orders
 exports.newOrder = asyncHandle(async (req, res, next) => {
     const clientId = req.user.id
-    const { orderId } = req.body
+    const { orderId, paymet } = req.body
     const findedDish = await dishModel.findById(orderId)
     if (!findedDish) return next(new ErrorResponse("Dish with this id not found.", 404));
 
     const order = await orderModel.create({
         clientId,
         dishId: findedDish._id,
-        price: findedDish.price
+        price: findedDish.price,
+        paymet // Carta yoki Nalichka
     })
     res.status(201).json({
         success: true,

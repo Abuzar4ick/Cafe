@@ -19,6 +19,10 @@ const orderSchema = new Schema({
     price: {
         type: Number,
         required: true
+    },
+    paymet: {
+        type: String,
+        enum: ["Cash", "Card"],
     }
 }, {
     timestamps: true
