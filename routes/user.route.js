@@ -11,7 +11,8 @@ const {
     newOrder,
     getOrders,
     getOrderById,
-    deleteOrder
+    deleteOrder,
+    logout
 } = require('../controllers/user.controller')
 const { getMenu, getDishById } = require('../controllers/admin.controller')
 require('express-group-routes')
@@ -243,5 +244,23 @@ router.get('/orders/:id', authenticate, checkChief, getOrderById)
  *         description: Order not found
  */
 router.delete('/orders/:id', authenticate, checkAdmin, deleteOrder)
+
+/**
+ * @swagger
+ * /api/register/logout:
+ *   post:
+ *     summary: Log out a user
+ *     tags: [User]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User successfully logged out
+ *       401:
+ *         description: Unauthorized or Invalid token
+ *       404:
+ *         description: User not found
+ */
+router.post('/auth/register/logout', authenticate, logout)
 
 module.exports = router

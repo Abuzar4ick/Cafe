@@ -53,6 +53,19 @@ exports.verify = asyncHandle(async (req, res, next) => {
     })
 })
 
+// Router: /api/register/logout
+exports.logout = asyncHandle(async (req, res, next) => {
+    const email = req.user.email
+    const findAuth = await authModel.findOne({ email })
+    if (!findAuth) return next(new ErrorResponse('User not found.', 404));
+    const updatedAuth = await authModel.findOneAndUpdate(email, { isVerify: false }, { new: true })
+    res.status(200).json({
+        success: true,
+        message: "You have successfully logged out.",
+        updatedAuth
+    })
+})
+
 // <-----------------------------------------------------------------------------> //
 
 // Router: /api/orders
