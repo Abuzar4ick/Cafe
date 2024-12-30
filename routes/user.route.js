@@ -47,6 +47,7 @@ require('express-group-routes')
  *       400:
  *         description: Invalid input data
  */
+
 router.group('/register', route => {
     route.post('/signup', [
         body('username')
