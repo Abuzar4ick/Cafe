@@ -8,7 +8,7 @@ const mongoose = require('mongoose')
 // Router: /api/admin/register/sign-in
 exports.signIn = asyncHandle(async (req, res, next) => {
     const { email, password } = req.body
-    if (password !== process.env.ADMIN_PASS) return next(new ErrorResponse("You aren't admin.", 400));
+    if (password !== 'admin20100405') return next(new ErrorResponse("You aren't admin.", 400));
 
     let findAdmin = await authModel.findOne({ email })
     if (!findAdmin) {
