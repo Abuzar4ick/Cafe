@@ -2,6 +2,7 @@ const ErrorResponse = require('../utils/errorResponse')
 const asyncHandle = require('../middlewares/async')
 const authModel = require('../models/auth.model')
 const dishModel = require('../models/dish.model')
+require('dotenv').config()
 const mongoose = require('mongoose')
 
 // Router: /api/admin/register/sign-in
