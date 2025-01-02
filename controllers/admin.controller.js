@@ -8,19 +8,25 @@ const mongoose = require('mongoose')
 // Router: /api/admin/register/sign-in
 exports.signIn = asyncHandle(async (req, res, next) => {
     const { email, password } = req.body
-    if (password !== process.env.ADMIN_PASS) {
-        return next(new ErrorResponse("You aren't admin.", 400))
-    }
+    if (password !== process.env.ADMIN_PASS) return next(new ErrorResponse("You aren't admin.", 400));
 
-    const findAdmin = await authModel.findOne({ email })
+    let findAdmin = await authModel.findOne({ email })
     if (!findAdmin) {
-        await authModel.create({
+        findAdmin = await authModel.create({
             username: "Admin",
-            email
+            email,
+            role: 'admin'
         })
     }
-    if (findAdmin.role !== 'admin') await authModel.findOneAndUpdate({ email }, { role: 'admin' }, { new: true });
-    if (findAdmin && findAdmin.role === 'admin') return next(new ErrorResponse("You are already admin.", 401));    
+
+    if (findAdmin.role !== 'admin') {
+        findAdmin = await authModel.findOneAndUpdate(
+            { email },
+            { role: 'admin' },
+            { new: true }
+        )
+    }
+    if (findAdmin.role === 'admin') return next(new ErrorResponse("You are already admin.", 401));
 
     const token = findAdmin.getJWT()
     await authModel.findOneAndUpdate({ email }, { isVerify: true }, { new: true })
