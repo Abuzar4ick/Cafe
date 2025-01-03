@@ -93,7 +93,8 @@ exports.updateUser = asyncHandle(async (req, res, next) => {
 // Router: /api/menu
 exports.addNewDish = asyncHandle(async (req, res, next) => {
     const { title, price, category } = req.body
-    const dish = await dishModel.create({ title, price, category })
+    const { img } = req.files
+    const dish = await dishModel.create({ title, price, category, img })
     res.status(201).json({
         success: true,
         newDish: dish

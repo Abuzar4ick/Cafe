@@ -13,6 +13,10 @@ const dishSchema = new Schema({
         type: String,
         default: "all"
     },
+    img: {
+        type: String,
+        required: true
+    },
     have: {
         type: Boolean,
         default: true
