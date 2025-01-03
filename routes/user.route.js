@@ -209,21 +209,36 @@ router.get("/menu", authenticate, getMenu);
  */
 router.get("/menu/:id", authenticate, getDishById);
 
-/**
- * @swagger
- * /api/orders:
- *   post:
- *     summary: Create a new order
- *     tags: [User]
- *     responses:
- *       200:
- *         description: Order created successfully
- *       500:
- *         description: Server error
- */
 router.group("/orders", (route) => {
-  route.post("/", authenticate, newOrder);
+  /**
+   * @swagger
+   * /api/orders:
+   *   post:
+   *     summary: Create a new order
+   *     tags: [User]
+   *     responses:
+   *       200:
+   *         description: Order created successfully
+   *       500:
+   *         description: Server error
+   */
+  route.post("/", authenticate, newOrder);  // POST route for creating orders
+
+  /**
+   * @swagger
+   * /api/orders:
+   *   get:
+   *     summary: Get all orders (Admin and Chief only)
+   *     tags: [User]
+   *     responses:
+   *       200:
+   *         description: Orders fetched successfully
+   *       500:
+   *         description: Server error
+   */
+  route.get("/", authenticate, checkAdmin, checkChief, getOrders);  // GET route for fetching all orders
 });
+
 
 /**
  * @swagger
