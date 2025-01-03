@@ -3,7 +3,7 @@ const router = Router();
 const { body, validationResult } = require('express-validator');
 const { authenticate } = require('../middlewares/checkToken');
 const checkAdmin = require('../middlewares/checkAdmin');
-const upload = require('../utils/fileUpload')
+const upload = require('../utils/fileUpload');
 require('express-group-routes');
 const {
     signIn,
@@ -53,7 +53,7 @@ router.group('/admin/register', route => {
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
                 return res.status(400).json({
-                    sucess: true,
+                    success: false,
                     errors: errors.array()
                 })
             }
@@ -108,17 +108,13 @@ router.group('/users', route => {
  *         description: Unauthorized
  */
 router.group('/menu', route => {
-    router.post('/', authenticate, checkAdmin, [
-        upload.fields([
-            { name: 'img', maxCount: 1 }
-        ]),
-    
+    route.post('/', authenticate, checkAdmin, [
+        upload.fields([ { name: 'img', maxCount: 1 } ]),
+
         // Validation for title and price
-        body('title')
-            .notEmpty().withMessage("Iltimos, taom nomini kiriting."),
-        body('price')
-            .notEmpty().withMessage("Iltimos, taom narxini kiriting"),
-    
+        body('title').notEmpty().withMessage("Iltimos, taom nomini kiriting."),
+        body('price').notEmpty().withMessage("Iltimos, taom narxini kiriting."),
+
         // Check for validation errors
         (req, res, next) => {
             const errors = validationResult(req);
