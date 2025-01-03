@@ -93,7 +93,7 @@ exports.updateUser = asyncHandle(async (req, res, next) => {
 // Router: /api/menu
 exports.addNewDish = asyncHandle(async (req, res, next) => {
     try {
-        const { title, price, category, img } = req.body;
+        const { title, price, category, img, } = req.body;
 
         // Ensure the image file exists
         if (!img) {
@@ -107,7 +107,7 @@ exports.addNewDish = asyncHandle(async (req, res, next) => {
             title,
             price,
             category,
-            img: img[0].path // img path
+            img
         });
 
         res.status(201).json({
