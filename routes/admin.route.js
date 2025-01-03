@@ -69,14 +69,151 @@ router.group('/admin/register', route => {
  *     tags: [Users]
  *     responses:
  *       200:
- *         description: List of users
+ *         description: Successfully retrieved the list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       username:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                       role:
+ *                         type: string
+ *                       balance:
+ *                         type: number
+ *                         nullable: true
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
  *       401:
  *         description: Unauthorized
  */
 router.group('/users', route => {
     route.get('/', authenticate, checkAdmin, getUsers);
+    
+    /**
+     * @swagger
+     * /users/{id}:
+     *   get:
+     *     summary: Get a user by ID
+     *     tags: [Users]
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         description: User ID
+     *         required: true
+     *         schema:
+     *           type: string
+     *     responses:
+     *       200:
+     *         description: Successfully retrieved the user
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 success:
+     *                   type: boolean
+     *                 data:
+     *                   type: object
+     *                   properties:
+     *                     _id:
+     *                       type: string
+     *                     username:
+     *                       type: string
+     *                     email:
+     *                       type: string
+     *                     role:
+     *                       type: string
+     *                     balance:
+     *                       type: number
+     *                       nullable: true
+     *                     createdAt:
+     *                       type: string
+     *                       format: date-time
+     *                     updatedAt:
+     *                       type: string
+     *                       format: date-time
+     *       401:
+     *         description: Unauthorized
+     */
     route.get('/:id', authenticate, checkAdmin, getUserById);
+
+    /**
+     * @swagger
+     * /users/{id}:
+     *   delete:
+     *     summary: Delete a user by ID
+     *     tags: [Users]
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         description: User ID
+     *         required: true
+     *         schema:
+     *           type: string
+     *     responses:
+     *       200:
+     *         description: Successfully deleted the user
+     *       401:
+     *         description: Unauthorized
+     *       404:
+     *         description: User not found
+     */
     route.delete('/:id', authenticate, checkAdmin, deleteUser);
+
+    /**
+     * @swagger
+     * /users/{id}:
+     *   patch:
+     *     summary: Update a user by ID
+     *     tags: [Users]
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         description: User ID
+     *         required: true
+     *         schema:
+     *           type: string
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               username:
+     *                 type: string
+     *               email:
+     *                 type: string
+     *               role:
+     *                 type: string
+     *               balance:
+     *                 type: number
+     *     responses:
+     *       200:
+     *         description: Successfully updated the user
+     *       400:
+     *         description: Invalid input
+     *       401:
+     *         description: Unauthorized
+     *       404:
+     *         description: User not found
+     */
     route.patch('/:id', authenticate, checkAdmin, updateUser);
 });
 
@@ -114,7 +251,6 @@ router.group('/users', route => {
  */
 router.group('/menu', route => {
     route.post('/', authenticate, checkAdmin, [
-        // Validation for title, price, and category
         body('title')
             .notEmpty().withMessage("Iltimos, taom nomini kiriting."),
         body('price')
@@ -125,8 +261,6 @@ router.group('/menu', route => {
         body('description')
             .isString().withMessage('Description must be a string.')
             .optional(),
-
-        // Check for validation errors
         (req, res, next) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -139,7 +273,6 @@ router.group('/menu', route => {
         }
     ], addNewDish);
 
-    // Update and delete dish
     route.put('/:id', authenticate, checkAdmin, updateDish);
     route.delete('/:id', authenticate, checkAdmin, deleteDish);
 });
