@@ -92,14 +92,33 @@ exports.updateUser = asyncHandle(async (req, res, next) => {
 
 // Router: /api/menu
 exports.addNewDish = asyncHandle(async (req, res, next) => {
-    const { title, price, category } = req.body
-    const { img } = req.files
-    const dish = await dishModel.create({ title, price, category, img })
-    res.status(201).json({
-        success: true,
-        newDish: dish
-    })
-})
+    try {
+        const { title, price, category } = req.body;
+        const { img } = req.files;
+
+        // Ensure the image file exists
+        if (!img) {
+            return res.status(400).json({
+                success: false,
+                message: 'Image file is required.'
+            });
+        }
+
+        const dish = await dishModel.create({
+            title,
+            price,
+            category,
+            img: img[0].path // img path
+        });
+
+        res.status(201).json({
+            success: true,
+            newDish: dish
+        });
+    } catch (err) {
+        next(err);  // Pass error to error handler middleware
+    }
+});
 
 // Router: /api/menu
 exports.getMenu = asyncHandle(async (req, res, next) => {

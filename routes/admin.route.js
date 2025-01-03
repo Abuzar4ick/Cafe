@@ -108,23 +108,27 @@ router.group('/users', route => {
  *         description: Unauthorized
  */
 router.group('/menu', route => {
-    route.post('/', authenticate, checkAdmin, [
+    router.post('/', authenticate, checkAdmin, [
         upload.fields([
             { name: 'img', maxCount: 1 }
-        ]),  
+        ]),
+    
+        // Validation for title and price
         body('title')
             .notEmpty().withMessage("Iltimos, taom nomini kiriting."),
         body('price')
             .notEmpty().withMessage("Iltimos, taom narxini kiriting"),
+    
+        // Check for validation errors
         (req, res, next) => {
-            const errors = validationResult(req)
+            const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({
-                    sucess: true,
+                    success: false,
                     errors: errors.array()
-                })
+                });
             }
-            next()
+            next();
         }
     ], addNewDish);
     route.put('/:id', authenticate, checkAdmin, updateDish);
