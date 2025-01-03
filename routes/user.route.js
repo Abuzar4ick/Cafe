@@ -236,7 +236,7 @@ router.group("/orders", (route) => {
    *       500:
    *         description: Server error
    */
-  route.get("/", authenticate, checkAdmin, checkChief, getOrders);  // GET route for fetching all orders
+  route.get("/", authenticate, checkChief, getOrders);  // GET route for fetching all orders
 });
 
 
