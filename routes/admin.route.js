@@ -115,10 +115,6 @@ router.group('/users', route => {
  */
 router.group('/menu', route => {
     route.post('/', authenticate, checkAdmin, [
-        upload.fields([
-            { name: 'img', maxCount: 1 }
-        ]),
-
         // Validation for title, price, and category
         body('title')
             .notEmpty().withMessage("Iltimos, taom nomini kiriting."),
