@@ -95,14 +95,6 @@ exports.addNewDish = asyncHandle(async (req, res, next) => {
     try {
         const { title, price, category, img, } = req.body;
 
-        // Ensure the image file exists
-        if (!img) {
-            return res.status(400).json({
-                success: false,
-                message: 'Image file is required.'
-            });
-        }
-
         const dish = await dishModel.create({
             title,
             price,
