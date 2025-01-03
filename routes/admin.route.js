@@ -50,16 +50,16 @@ router.group('/admin/register', route => {
             .isEmail().withMessage("Iltimos, email ni to'g'ri kiriting.")
             .matches('@gmail.com$', 'i').withMessage("Iltimos, faqat @gmail.com manzillarini kiriting."),
         (req, res, next) => {
-            const errors = validationResult(req)
+            const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({
-                    success: false,
+                    success: true,
                     errors: errors.array()
-                })
+                });
             }
-            next()
+            next();
         }
-    ], signIn)
+    ], signIn);
 });
 
 /**
@@ -99,6 +99,12 @@ router.group('/users', route => {
  *               price:
  *                 type: number
  *                 format: float
+ *               category:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               description:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Dish added successfully
@@ -109,11 +115,21 @@ router.group('/users', route => {
  */
 router.group('/menu', route => {
     route.post('/', authenticate, checkAdmin, [
-        upload.fields([ { name: 'img', maxCount: 1 } ]),
+        upload.fields([
+            { name: 'img', maxCount: 1 }
+        ]),
 
-        // Validation for title and price
-        body('title').notEmpty().withMessage("Iltimos, taom nomini kiriting."),
-        body('price').notEmpty().withMessage("Iltimos, taom narxini kiriting."),
+        // Validation for title, price, and category
+        body('title')
+            .notEmpty().withMessage("Iltimos, taom nomini kiriting."),
+        body('price')
+            .notEmpty().withMessage("Iltimos, taom narxini kiriting"),
+        body('category')
+            .isArray().withMessage('Category must be an array of strings.')
+            .optional(),
+        body('description')
+            .isString().withMessage('Description must be a string.')
+            .optional(),
 
         // Check for validation errors
         (req, res, next) => {
@@ -127,6 +143,8 @@ router.group('/menu', route => {
             next();
         }
     ], addNewDish);
+
+    // Update and delete dish
     route.put('/:id', authenticate, checkAdmin, updateDish);
     route.delete('/:id', authenticate, checkAdmin, deleteDish);
 });
