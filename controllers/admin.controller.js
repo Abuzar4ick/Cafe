@@ -99,6 +99,7 @@ exports.addNewDish = asyncHandle(async (req, res, next) => {
             title,
             price,
             category,
+            description,
             img
         });
 
