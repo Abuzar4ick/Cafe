@@ -3,6 +3,7 @@ const router = Router();
 const { body, validationResult } = require('express-validator');
 const { authenticate } = require('../middlewares/checkToken');
 const checkAdmin = require('../middlewares/checkAdmin');
+const upload = require('../utils/fileUpload')
 require('express-group-routes');
 const {
     signIn,
@@ -11,7 +12,6 @@ const {
     deleteUser,
     updateUser,
     addNewDish,
-    getDishById,
     updateDish,
     deleteDish
 } = require('../controllers/admin.controller');
@@ -109,6 +109,9 @@ router.group('/users', route => {
  */
 router.group('/menu', route => {
     route.post('/', authenticate, checkAdmin, [
+        upload.fields([
+            { name: 'img', maxCount: 1 }
+        ]),  
         body('title')
             .notEmpty().withMessage("Iltimos, taom nomini kiriting."),
         body('price')
