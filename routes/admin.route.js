@@ -3,7 +3,6 @@ const router = Router();
 const { body, validationResult } = require('express-validator');
 const { authenticate } = require('../middlewares/checkToken');
 const checkAdmin = require('../middlewares/checkAdmin');
-const upload = require('../utils/fileUpload');
 require('express-group-routes');
 const {
     signIn,
