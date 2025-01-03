@@ -5,7 +5,7 @@ const fs = require('fs');
 // Upload papkasini yaratish
 const uploadPath = path.join(__dirname, '..', 'public', 'uploads');
 if (!fs.existsSync(uploadPath)) {
-    fs.mkdirSync(uploadPath, { recursive: true });
+    fs.mkdirSync(uploadPath, { recursive: true }); // Agar papka yo'q bo'lsa, uni yaratish
 }
 
 // Fayl saqlash konfiguratsiyasi
