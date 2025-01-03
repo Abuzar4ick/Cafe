@@ -11,18 +11,28 @@ const dishSchema = new Schema({
     },
     category: {
         type: [String],
-        default: ['all'],  // Bir nechta kategoriyalarni qo'llash uchun
-        required: true
+        default: ['all'],
+        required: true,
+        validate: {
+            validator: (v) => Array.isArray(v) && v.length > 0,
+            message: 'At least one category is required'
+        }
     },
     img: {
         type: String,
-        required: true   // Rasmni saqlash uchun string (yoki path)
+        required: true,
+        validate: {
+            validator: function (v) {
+                return /^(https?:\/\/)?([a-z0-9]+[.-_])*[a-z0-9]+\.[a-z]{2,}(\/.*)?$/i.test(v);
+            },
+            message: 'Invalid image URL'
+        }
     },
     have: {
         type: Boolean,
         default: true
     },
-    description: {  // Agar taomni tasvirlash uchun qo'shimcha xususiyat kerak bo'lsa
+    description: {
         type: String,
         default: ''
     }
